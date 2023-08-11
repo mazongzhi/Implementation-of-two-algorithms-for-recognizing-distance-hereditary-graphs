@@ -2,7 +2,7 @@ import networkx as nx
 import random
 import time
 import matplotlib.pyplot as plt
-import main as check
+import method1 as check
 import method2 as check2
 import math
 import memory_profiler
