@@ -12,12 +12,13 @@ class TreeNode:
 
 
 
-
-def is_complete_graph(G): #判别是否为完全图
+# Determine if the input graph G is a complete graph.
+def is_complete_graph(G):
     for u, v in combinations(G.nodes(), 2):
         if not G.has_edge(u, v):
             return False
     return True
+
 
 def sort_list(lis):
     li1=[]
@@ -32,7 +33,8 @@ def sort_list(lis):
     return li1+li2
 
 
-def cograph_cotree_generate(G_temp): #计算cograph的cotree
+
+def cograph_cotree_generate(G_temp): #Compute the cotree of a cograph
     G=nx.Graph(G_temp)
     stack=[]
     n=G.order()
@@ -45,7 +47,7 @@ def cograph_cotree_generate(G_temp): #计算cograph的cotree
         temp_neighbor=set()
         iscograph = False
         for node in G:
-            # 获取该节点的所有邻居，并转换为frozenset
+            # Get all neighbors of this node and convert them to a frozenset.
 
             neighbor1 = list(G.neighbors(node))
             neighbor2 = list(G.neighbors(node))
@@ -55,7 +57,7 @@ def cograph_cotree_generate(G_temp): #计算cograph的cotree
             neighbor_set1 = tuple(neighbor1)
             neighbor_set2 = tuple(neighbor2)
             temp_neighbor = neighbor1
-            # 将邻居集合和节点添加到字典中
+            # Add the set of neighbors and the node to the dictionary.
             if neighbor_set1 not in neighbor_dict1:
                 neighbor_dict1[neighbor_set1] = node
             else:
@@ -118,7 +120,8 @@ def cograph_cotree_generate(G_temp): #计算cograph的cotree
     return build_tree(None,stack)
 
 
-def build_tree(root,stack):#生成cotree
+# For generating the cotree.
+def build_tree(root,stack):
     if root == None:
         root=TreeNode(str(stack[0][0]))
         root.left=TreeNode(str(stack[0][1]))
@@ -134,7 +137,7 @@ def build_tree(root,stack):#生成cotree
                 build_tree(root.right, stack)
     return root
 
-
+# For DEBUG, used for testing purposes.
 def print_cotree(root, indent=''):
     if root is not None:
         print(indent + root.label)
@@ -142,6 +145,7 @@ def print_cotree(root, indent=''):
         print_cotree(root.right, indent + '  ')
 
 
+# Generate the relationship list of internal nodes in the cotree.
 def pruning_sequence(G, j=0):
     cotree = cograph_cotree_generate(G)
     sequence = []
@@ -188,6 +192,8 @@ def pruning_sequence(G, j=0):
     last_vertex = cotree.label
     return sequence, last_vertex
 
+
+# Generate the distance layout list for vertex v with respect to graph G.
 def distance_layout(G, v):
     visited = set()
     layout = []
@@ -206,17 +212,22 @@ def distance_layout(G, v):
 
     return layout
 
+
 def prune_cograph(G, j):
     sequence, last_vertex = pruning_sequence(G, j)
     j += len(G) - 1
     # print(sequence)
     return sequence,last_vertex, j
 
+
+# Plot the graph G, for DEBUG testing purposes.
 def draw_plt_graph(G):
     draw_graph(G)
     plt.pause(0.5)
     plt.clf()
 
+
+# Merge multiple nodes into a single node.
 def contrast_graph(G,c_node,t_node):
     G.add_edges_from((c_node, n) for n in G.neighbors(t_node))
     G.remove_node(t_node)
@@ -224,6 +235,8 @@ def contrast_graph(G,c_node,t_node):
         G.remove_edge(c_node,c_node)
     return G
 
+
+# Generate the relationship list of internal nodes in the distance-hereditary graph for subsequent verification.
 def distance_hereditary_pruning_sequence(G):
     j = 1
     arbitrary_vertex = list(G.nodes())[0]
@@ -295,20 +308,16 @@ def distance_hereditary_pruning_sequence(G):
     return S
 
 def draw_graph(G):
-    # 设置节点位置
     pos = nx.spring_layout(G)
 
-    # 绘制图
     nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=1000)
 
-    # 添加边标签
     edge_labels = nx.get_edge_attributes(G, 'weight')
     nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-
-    # 显示图形
     plt.show()
 
 
+# Verify if the generated relationship list of internal nodes in the distance-hereditary graph is valid.
 def Vericationstep(G, S):
     if S == ['This graph is not distance_hereditary graph']:
         print(False)
@@ -383,6 +392,7 @@ def Vericationstep(G, S):
     return True
 
 
+# Remove duplicates from the list.
 def remove_duplicates(lst):
     seen = set()
     unique_list = []
@@ -440,7 +450,7 @@ if __name__ == '__main__':
     test_G=G1
     judge_G=test_G.copy()
     draw_plt_graph(test_G)
-    #思路就是不断压缩，先由距离布局找到cograph，然后压缩成一个点，然后只能是P关系，否则就错了，然后继续这样。
+
     S=distance_hereditary_pruning_sequence(test_G)
     S=remove_duplicates(S)
     plt.ioff()
