@@ -2,11 +2,13 @@ import networkx as nx
 import random
 import time
 import matplotlib.pyplot as plt
-import method1 as check
+import methond1 as check
 import method2 as check2
 import math
 import memory_profiler
 
+
+#Add a Node to the Graph.
 def add_new_vertex(G, v, distance_layout):
     method = random.choice(['P', 'T', 'F'])
 
@@ -42,6 +44,7 @@ def add_new_vertex(G, v, distance_layout):
     return G, distance_layout
 
 
+#Generate a Distance-Hereditary Graph, where n represents the number of nodes in the graph.
 def generate_distance_hereditary_graph(n):
     G = nx.Graph()
     G.add_node(1)
@@ -55,6 +58,7 @@ def generate_distance_hereditary_graph(n):
     return G
 
 
+# Generate a non-Distance-Hereditary Graph, where n represents the number of nodes in the graph.
 def generate_non_distance_hereditary_graph(n):
     G = nx.cycle_graph(5)
     distance_layout = [set([5])]
@@ -64,6 +68,7 @@ def generate_non_distance_hereditary_graph(n):
     return G
 
 
+# Compare the execution time of Algorithm 1 and Algorithm 2 on the distance-hereditary graph dataset and display the results in graphical format.
 def compare_two_algorithm():
     execution_times1 = []
     execution_times2 = []
@@ -79,19 +84,19 @@ def compare_two_algorithm():
         end_time = time.perf_counter()
         execution_times2.append(end_time - start_time)
 
-    # 绘制图形
+
     plt.plot(execution_times1, label='Algorithm 1')
     plt.plot(execution_times2, label='Algorithm 2')
 
     plt.title("Distance-hereditary graph dataset")
-    plt.xlabel('graph nodes')  # 横轴标签
-    plt.ylabel('Execution Time')  # 纵轴标签
-    # 添加图例
+    plt.xlabel('graph nodes')
+    plt.ylabel('Execution Time')
+
     plt.legend()
 
-    # 显示图形
     plt.show()
 
+# Compare the execution time of Algorithm 1 and Algorithm 2 on the non-distance-hereditary graph dataset and display the results in chart format.
 def compare_two_algorithm2():
     execution_times1 = []
     execution_times2 = []
@@ -107,19 +112,19 @@ def compare_two_algorithm2():
         end_time = time.perf_counter()
         execution_times2.append(end_time - start_time)
 
-    # 绘制图形
+
     plt.plot(execution_times1, label='Algorithm 1')
     plt.plot(execution_times2, label='Algorithm 2')
 
     plt.title("Non-distance-hereditary graph dataset")
-    plt.xlabel('graph nodes')  # 横轴标签
-    plt.ylabel('Execution Time')  # 纵轴标签
-    # 添加图例
+    plt.xlabel('graph nodes')
+    plt.ylabel('Execution Time')
+
     plt.legend()
 
-    # 显示图形
     plt.show()
 
+# Compare the execution time of Algorithm 1 and Algorithm 2 on the random graph dataset and display the results in chart format.
 def compare_two_algorithm3():
     execution_times1 = []
     execution_times2 = []
@@ -135,20 +140,19 @@ def compare_two_algorithm3():
         end_time = time.perf_counter()
         execution_times2.append(end_time - start_time)
 
-    # 绘制图形
+
     plt.plot(execution_times1, label='Algorithm 1')
     plt.plot(execution_times2, label='Algorithm 2')
 
     plt.title("random graph dataset")
-    plt.xlabel('graph nodes')  # 横轴标签
-    plt.ylabel('Execution Time')  # 纵轴标签
-    # 添加图例
+    plt.xlabel('graph nodes')
+    plt.ylabel('Execution Time')
+
     plt.legend()
 
-    # 显示图形
     plt.show()
 
-
+# Observe the ratio curve of Algorithm 1 execution time with n, n^2, and n^3 to determine the specific time complexity of Algorithm 1.
 def Algorithm1():
     execution_times1 = []
     execution_times2 = []
@@ -162,20 +166,21 @@ def Algorithm1():
         execution_times1.append(execution_times/n)
         execution_times2.append((execution_times)/(n*n))
         execution_times3.append((execution_times)/(n*n*n))
-    # 绘制图形
+
     plt.plot(execution_times1, label='n')
     plt.plot(execution_times2, label='n^2')
     plt.plot(execution_times3, label='n^3')
 
     plt.title("Time Complexity Estimation -- Algorithm1")
-    plt.xlabel('graph nodes')  # 横轴标签
-    plt.ylabel('Execution Time * 1e7')  # 纵轴标签
-    # 添加图例
+    plt.xlabel('graph nodes')
+    plt.ylabel('Execution Time * 1e7')
+
     plt.legend()
 
-    # 显示图形
     plt.show()
 
+
+# Observe the ratio curve of Algorithm 2 execution time with n, n^2, and n^3 to determine the specific time complexity of Algorithm 2.
 def Algorithm2():
     execution_times1 = []
     execution_times2 = []
@@ -189,30 +194,24 @@ def Algorithm2():
         execution_times1.append(execution_times/(n*math.log(n)))
         execution_times2.append((execution_times)/(n*n))
         execution_times3.append((execution_times)/(n*n*n))
-    # 绘制图形
+
     plt.plot(execution_times1, label='nlogn')
     plt.plot(execution_times2, label='n^2')
     plt.plot(execution_times3, label='n^3')
 
     plt.title("Time Complexity Estimation -- Algorithm2")
-    plt.xlabel('graph nodes')  # 横轴标签
-    plt.ylabel('Execution Time * 1e7')  # 纵轴标签
-    # 添加图例
+    plt.xlabel('graph nodes')
+    plt.ylabel('Execution Time * 1e7')
+
     plt.legend()
 
-    # 显示图形
     plt.show()
 
+
+
 if __name__ == '__main__':
-    Algorithm2()
-    # n = 7  # Number of vertices in the graph
-    # for i in range(1,2):
-    #     G = generate_distance_hereditary_graph(n)
-    #     pos = nx.spring_layout(G)
-    #
-    #     if not check.check_distance_hereditary_graph(G):
-    #         print("method1 has failed")
-    #         break
-        # if not check2.check_distance_hereditary_graph(G,len(G.nodes)):
-        #     print("method2 has failed")
-        #     break
+    compare_two_algorithm()
+    # compare_two_algorithm2()
+    # compare_two_algorithm3()
+    # Algorithm1()
+    # Algorithm2()
