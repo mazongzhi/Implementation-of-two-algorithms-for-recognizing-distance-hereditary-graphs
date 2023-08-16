@@ -9,17 +9,15 @@ from memory_profiler import profile
 
 def build_open_prefix_tree(G):
     n = len(G.nodes)
-    # Step 1
+
     P = defaultdict(list)
 
-    # Step 2-4
     for v in G:
         neighbors = list(G.neighbors(v))
         neighbors.sort()  # assuming that bucket sort is not necessary as python's sort function is efficient
         for u in neighbors:
             P[u].append(v)
 
-    # Step 5
     T = nx.DiGraph()
     root = n+1
     T.add_node(root,label="root")
@@ -27,25 +25,24 @@ def build_open_prefix_tree(G):
         T.add_node(v,label="i{}".format(v))
         T.add_edge(v, root)
 
-    # Step 6
     max_k = max(len(P[v]) for v in G.nodes)
 
     for k in range(max_k):
-        # Step 7
+
         nodes_on_kth_depth = [node for node, depth in nx.shortest_path_length(T, source=root).items() if depth == k and node > n]
         for x in nodes_on_kth_depth:
-            # Step 8
+
             #draw_graph(T)
             vertices_pointing_to_x = [v for v in T.predecessors(x) if v <= n]
             vertices_pointing_to_x.sort()
             for v in vertices_pointing_to_x:
-                # Step 9
+
                 if len(P[v]) > k:
                     u = P[v][k]
-                    # Step 10
+
                     y=v
                     if not any(T.nodes[v]['label'] == u for v in T.successors(x)):
-                        # Step 11
+
                         y = max(T.nodes) + 1  # get a new unique node
                         T.add_node(y,label=u)
                         T.add_edge(x, y)
@@ -59,10 +56,10 @@ def build_open_prefix_tree(G):
 
 def build_close_prefix_tree(G):
     n = len(G.nodes)
-    # Step 1
+
     P = defaultdict(list)
 
-    # Step 2-4
+
     for v in G:
         neighbors = list(G.neighbors(v))
         neighbors.append(v)
@@ -70,7 +67,7 @@ def build_close_prefix_tree(G):
         for u in neighbors:
             P[u].append(v)
 
-    # Step 5
+
     T = nx.DiGraph()
     root = n+1
     T.add_node(root,label="root")
@@ -78,25 +75,25 @@ def build_close_prefix_tree(G):
         T.add_node(v,label="i{}".format(v))
         T.add_edge(v, root)
 
-    # Step 6
+
     max_k = max(len(P[v]) for v in G.nodes)
 
     for k in range(max_k):
-        # Step 7
+
         nodes_on_kth_depth = [node for node, depth in nx.shortest_path_length(T, source=root).items() if depth == k and node > n]
         for x in nodes_on_kth_depth:
-            # Step 8
+
             #draw_graph(T)
             vertices_pointing_to_x = [v for v in T.predecessors(x) if v <= n]
             vertices_pointing_to_x.sort()
             for v in vertices_pointing_to_x:
-                # Step 9
+
                 if len(P[v]) > k:
                     u = P[v][k]
-                    # Step 10
+
                     y=v
                     if not any(T.nodes[v]['label'] == u for v in T.successors(x)):
-                        # Step 11
+
                         y = max(T.nodes) + 1  # get a new unique node
                         T.add_node(y,label=u)
                         T.add_edge(x, y)
@@ -108,39 +105,31 @@ def build_close_prefix_tree(G):
     return T
 
 def delete_vertex_from_prefix_tree(T, w,n):
-    # Step 1
+
     if w not in T:
         return T
     x = next(iter(T.successors(w)))
 
-    # Step 2
     T.remove_node(w)
     while T.out_degree(x) == 0 and len(list(T.predecessors(x))) == 1 and x != n+1:
         parent_x = next(iter(T.predecessors(x)))
         T.remove_node(x)
         x = parent_x
 
-    # Step 3
     T_temp=T.copy()
     for x in T:
         if T_temp.nodes[x]['label'] == w:
-            # Step 4
             y = next(node for node in T_temp.predecessors(x) if node > n)
 
-            # Step 5
             for v in list(vertex for vertex in T_temp.predecessors(x) if vertex<=n and vertex!=w):
                 T_temp.add_edge(v, y)
                 T_temp.remove_edge(v, x)
 
-            # Step 6
             T_temp.remove_edge(y, x)
-
-            # Step 7 and Step 8
             children_x = list(T_temp.successors(x))
             for child in children_x:
                 T_temp.add_edge(y, child)
 
-            # Step 9
             T_temp.remove_node(x)
 
     # Step 11
@@ -248,6 +237,7 @@ def Whether_Distacne_Hereditary_Graph(G,n):
     return True
 
 
+# Evaluate the execution time for different steps in Algorithm 2 for testing purposes.
 def judge_differnet_parts(G,n):
     execution_time1 = 0
     execution_time2 = 0
@@ -301,8 +291,8 @@ def judge_differnet_parts(G,n):
 
         #compute check tree time
         start_time = time.perf_counter()
-        # open_T = check_Wehther_Tree_has_same_node_in_same_layer([n + 1], open_T)
-        # close_T = check_Wehther_Tree_has_same_node_in_same_layer([n+1],close_T)
+        open_T = check_Wehther_Tree_has_same_node_in_same_layer([n + 1], open_T)
+        close_T = check_Wehther_Tree_has_same_node_in_same_layer([n+1],close_T)
 
         end_time = time.perf_counter()
         execution_time4 = execution_time4 + end_time - start_time
